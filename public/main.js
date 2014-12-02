@@ -1,17 +1,3 @@
-function switchOn(id) {
-	$.get('/switch/on/' + id)
-		.done(function (data) {
-			console.log('relay #'+id+' is ' + data);
-		});		
-};
-
-function switchOn(id) {
-	$.get('/switch/off/' + id)
-		.done(function (data) {
-			console.log('relay #'+id+' is ' + data);
-		});		
-};
-
 function setButtonStatus(status) {
 	var button = [];
 	button[0] = $('#relay1');
@@ -38,7 +24,7 @@ $(document).ready(function() {
 	var relayStatus;
 	$.get('/status').done(function(data) {
 		relayStatus = data.trim().split('/');
-		console.log(data);
+		console.log(data.trim());
 
 		if (!data) {
 			relayStatus[0] = "off";

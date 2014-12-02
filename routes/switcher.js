@@ -16,7 +16,8 @@ switcher.get('/switch/on/:id', function (req, res) {
 		}	
 	};
 
-	var command = "sudo python ./executables/on" + req.id + '.py';
+	var command = "sudo python ./executables/on.py " + (15 + parseInt(req.id));
+	console.log(command);
 	var bashSwitch = exec(command, execReturn);
 });
 
@@ -30,7 +31,8 @@ switcher.get('/switch/off/:id', function (req, res) {
 		}	
 	};
 
-	var command = "sudo python ./executables/off" + req.id + '.py';
+	var command = "sudo python ./executables/off.py " + (15 + parseInt(req.id));
+	console.log(command);
 	var bashSwitch = exec(command, execReturn);
 });
 
