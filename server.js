@@ -1,10 +1,12 @@
 var express	= require("express");
 var stylus	= require("stylus");
 var nib		= require("nib");
+var flash 	= require('connect-flash')
 
 var mainPage	= require('./routes/mainPage');
 var switcher 	= require('./routes/switcher');
 var status	 	= require('./routes/status');
+var login 		= require('./routes/login');
 
 function compile(str, path) {
 	return stylus(str)
@@ -13,6 +15,9 @@ function compile(str, path) {
 }
 
 var app = express();
+app.use(express.cookieParser('keyboard cat'));
+app.use(express.session({ cookie: { maxAge: 60000 }}));
+app.use(flash());
 app.set('views', __dirname+ "/views");
 app.set('view engine', 'jade');
 app.use(stylus.middleware({
@@ -21,9 +26,10 @@ app.use(stylus.middleware({
 }));
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', mainPage);
-app.get('/switch/*', switcher);
-app.get('/status', status);
+app.use('/', mainPage);
+app.use('/switch/*', switcher);
+app.use('/status', status);
+app.use('/login', login)
 
 app.listen(3000);
 console.log("webserver ready...");

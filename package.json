@@ -8,6 +8,8 @@
 		"stylus": "*",
 		"nib": "*",
 		"passport": "*",
-		"jquery": "*"
+		"jquery": "*",
+		"passport-local": "*",
+		"connect-flash": "*"
 	}
 }

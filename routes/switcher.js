@@ -6,7 +6,7 @@ switcher.param('id', function (req, res, next, id) {
 	next();
 });
 
-switcher.get('/switch/on/:id', function (req, res) {
+switcher.get('/on/:id', function (req, res) {
 	var execReturn = function (error, stdout, strerr) {
 		if (!!error) {
 			console.log(error);
@@ -20,7 +20,7 @@ switcher.get('/switch/on/:id', function (req, res) {
 	var bashSwitch = exec(command, execReturn);
 });
 
-switcher.get('/switch/off/:id', function (req, res) {
+switcher.get('/off/:id', function (req, res) {
 	var execReturn = function (error, stdout, strerr) {
 		if (!!error) {
 			console.log(error);
