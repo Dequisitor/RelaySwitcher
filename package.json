@@ -6,10 +6,7 @@
 		"express": "*",
 		"jade": "*",
 		"stylus": "*",
-		"nib": "*",
-		"passport": "*",
 		"jquery": "*",
-		"passport-local": "*",
-		"connect-flash": "*"
+		"morgan": "*"
 	}
 }
