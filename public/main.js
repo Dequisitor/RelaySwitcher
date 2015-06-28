@@ -4,46 +4,49 @@ $(document).ready(function() {
 	var relayStatus = [];
 	
 	for (var i=0; i<relays.length; i++) {
-		//get button handle
-		var button = $(relays[i]);
-		
-		//get current state
-		$.get("/status/"+i).done(function(data) {
-			if (data != "ERROR") {
-				relayStatus[i] = data.trim();
-				
-				if (relayStatus[i] == 1) {
-					button.addClass("on");
+
+		//closure for state check
+		var stateCallback = function(current) {
+			return function(data) {
+				if (data != "ERROR") {
+					relayStatus[current] = data.trim();
+					
+					if (relayStatus[current] == 1) {
+						$(relays[current]).addClass("on");
+					};
 				};
 			};
-		});
+		};
+
+		//closure for switches
+		var switchCallback = function(current, state) {
+			return function(error) {
+				if (error == "OK") {
+					if (state == 0 && $(relays[current]).hasClass("on")) {
+						$(relays[current]).removeClass("on");
+					}
+					if (state == 1 && !$(relays[current]).hasClass("on")) {
+						$(relays[current]).addClass("on");
+					}
+					relayStatus[current] = state;
+				} else {
+					console.log(error);
+				};
+			};
+		};
+
+		//get current state
+		$.get("/status/"+i).done(stateCallback(i));
 
 		//set onclick listeners
-		$(button).click(function () {
-			if (relayStatus[i] == 0) {
-				$.get("/switch/on/"+i).done(function (error) {
-					if (error == "OK") {
-						if (!button.hasClass("on")) {
-							button.addClass("on");
-						}
-						relayStatus[i] = 1;						
-					} else {
-						console.log(error);
-					}
-				});
-
-			} else {
-				$.get("/switch/off/"+i).done(function (error) {
-					if (error == "OK") {
-						if (button.hasClass("on")) {
-							button.removeClass("on");
-						}
-						relayStatus[i] = 0;					
-					} else {
-						console.log(error);
-					}
-				});
+		$(relays[i]).click(function(current) {
+			return function() {
+				if (relayStatus[current] == 0) {
+					$.get("/switch/on/"+current).done(switchCallback(current, 1));
+				} else {
+					$.get("/switch/off/"+current).done(switchCallback(current, 0));
+				};
 			}
-		});
+		}(i));
 	};
 });

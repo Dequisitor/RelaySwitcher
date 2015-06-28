@@ -21,8 +21,12 @@ console.log("webserver ready...");
 //export GPIO pins
 var exec = require("child_process").exec;
 exec("sudo echo 22 > /sys/class/gpio/export", function (error, stdout, stderr) {
-	console.log(stdout.trim());
+	if (stderr) {
+		console.log(stderr.trim());
+	}
 });
 exec("sudo echo 23 > /sys/class/gpio/export", function (error, stdout, stderr) {
-	console.log(stdout.trim());
+	if (stderr) {
+		console.log(stderr.trim());
+	}
 });
