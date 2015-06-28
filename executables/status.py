@@ -1,15 +1,12 @@
-str = ""
-relay0 = open('/sys/class/gpio/gpio22/value', 'r')
-relay1 = open('/sys/class/gpio/gpio23/value', 'r')
+import sys
 
-if int(relay0.read().strip()) == 0:
-	str += "on/"
+result = ""
+fileName = "/sys/class/gpio/gpio" + sys.argv[1] + "/value"
+relay = open(fileName, "r")
+
+if int(relay.read().strip()) == 0:
+	result = "1"
 else:
-	str += "off/"
+	result = "0"
 
-if int(relay1.read().strip()) == 0:
-	str += "on"
-else:
-	str += "off"
-
-print str
+print result

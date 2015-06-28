@@ -1,77 +1,49 @@
-function setButtonStatus(status) {
-	var button = [];
-	button[0] = $('#relay1');
-	button[1] = $('#relay2');
-
-	for (var i=0; i<button.length; i++) {
-		if (status[i] == "on") {
-			if (!button[i].hasClass('on')) {
-				button[i].addClass('on');
-			}
-		}
-
-		if (status[i] == "off") {
-			if (button[i].hasClass('on')) {
-				button[i].removeClass('on');
-			}
-		}
-	}
-}
-
-
-/********************************************************************************************/
 $(document).ready(function() {
-	var relayStatus;
-	$.get('/status').done(function(data) {
-		relayStatus = data.trim().split('/');
-		console.log(data.trim());
+	
+	var relays = ["#relay1", "#relay2"];
+	var relayStatus = [];
+	
+	for (var i=0; i<relays.length; i++) {
+		//get button handle
+		var button = $(relays[i]);
+		
+		//get current state
+		$.get("/status/"+i).done(function(data) {
+			if (data != "ERROR") {
+				relayStatus[i] = data.trim();
+				
+				if (relayStatus[i] == 1) {
+					button.addClass("on");
+				};
+			};
+		});
 
-		if (!data) {
-			relayStatus[0] = "off";
-			relayStatus[1] = "off";
-		}
+		//set onclick listeners
+		$(button).click(function () {
+			if (relayStatus[i] == 0) {
+				$.get("/switch/on/"+i).done(function (error) {
+					if (error == "OK") {
+						if (!button.hasClass("on")) {
+							button.addClass("on");
+						}
+						relayStatus[i] = 1;						
+					} else {
+						console.log(error);
+					}
+				});
 
-		setButtonStatus(relayStatus);
-	});
-
-	$('#relay1').click(function () {
-		console.log('clicked #1 with status: ' + relayStatus[0]);
-		if (relayStatus[0] == "off") {
-			$.get('/switch/on/0').done(function (error) {
-				if (error == "OK") {
-					relayStatus[0] = "on";
-					setButtonStatus(relayStatus);
-				}
-			});
-		}
-		if (relayStatus[0] == "on") {
-			$.get('/switch/off/0').done(function (error) {
-				if (error == "OK") {
-					relayStatus[0] = "off";
-					setButtonStatus(relayStatus);
-				}
-			});
-		}
-	});
-
-	$('#relay2').click(function () {
-		console.log('clicked #2 with status: ' + relayStatus[1]);
-		if (relayStatus[1] == "off") {
-			$.get('/switch/on/1').done(function (error) {
-				if (error == "OK") {
-					relayStatus[1] = "on";
-					setButtonStatus(relayStatus);
-				}
-			});
-		}
-		if (relayStatus[1] == "on") {
-			$.get('/switch/off/1').done(function (error) {
-				if (error == "OK") {
-					relayStatus[1] = "off";
-					setButtonStatus(relayStatus);
-				}
-			});
-		}
-	});
-
+			} else {
+				$.get("/switch/off/"+i).done(function (error) {
+					if (error == "OK") {
+						if (button.hasClass("on")) {
+							button.removeClass("on");
+						}
+						relayStatus[i] = 0;					
+					} else {
+						console.log(error);
+					}
+				});
+			}
+		});
+	};
 });
