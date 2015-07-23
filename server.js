@@ -15,7 +15,7 @@ app.use('/', mainPage);
 app.use('/switch/', switcher);
 app.use('/status', status);
 
-app.listen(80, "192.168.2.201");
+app.listen(3001);
 console.log("webserver ready...");
 
 //export GPIO pins
