@@ -1,4 +1,4 @@
-web_switcher_ATLAS
+Relay Switcher
 ==================
-Nodejs application to switch the relay connected to the rapsberry pi b+.
+Nodejs application to switch the relay connected to the rapsberry pi.
 1st draft.
