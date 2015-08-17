@@ -36,15 +36,15 @@ $(document).ready(function() {
 		};
 
 		//get current state
-		$.get("/status/"+i).done(stateCallback(i));
+		$.get("./../status/"+i).done(stateCallback(i));
 
 		//set onclick listeners
 		$(relays[i]).click(function(current) {
 			return function() {
 				if (relayStatus[current] == 0) {
-					$.get("/switch/on/"+current).done(switchCallback(current, 1));
+					$.get("./../switch/on/"+current).done(switchCallback(current, 1));
 				} else {
-					$.get("/switch/off/"+current).done(switchCallback(current, 0));
+					$.get("./../switch/off/"+current).done(switchCallback(current, 0));
 				};
 			}
 		}(i));
