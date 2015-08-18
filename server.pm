@@ -14,7 +14,23 @@ sub handleRequest {
     my $regPath = "RelaySwitcher/public" . $_[3];
     print "request path: $regPath\n";
 
-    #init();
+    if ($reqType eq "POST") {
+        my $contentLength = 0;
+        while (<$handle>) {
+            last if $_ eq "\r\n";
+
+            my $line = substr($_, 0, 15);
+            if ($line eq "Content-Length:") {
+                ($contentLength = substr($_, 15)) =~ s/\s//;
+            }
+        }
+
+        my $content;
+        read($handle, $content, $contentLength);
+        print "recieved content: $content\n";
+        print $handle "HTTP/1.1 200 OK\r\n\r\n";
+        return "OK";
+    }
 
     if ($reqType eq "GET") {
         #search apis
@@ -27,11 +43,9 @@ sub handleRequest {
             if ($? == 0) {
                 print "command: $command: $result";
                 print $handle $result;
-                return 1;
+                return "OK";
             } else {
-                print "error executing command: $command: $!\n";
-                print $handle "error: $!";
-                return 1;
+                return "error executing command: $command: $?"
             }
         }
 
@@ -42,14 +56,21 @@ sub handleRequest {
                 my $result = `$command`;
                 if ($? == 0) {
                     print $handle "OK";
+                    return "OK";
                 } else {
-                    print $handle "error: $!";
+                    return "error: $!";
                 }
-                return 1;
             }
 
-            print "invalid switch\n";
-            return;
+            return "invalid switch";
+        }
+
+        #main page
+        print "reqPieces length: @reqPieces\n";
+        if (@reqPieces == 0) {
+            print $handle "HTTP/1.1 307 REDIRECT\r\n";
+            print $handle "Location: /" . __PACKAGE__ . "/views/index.html\r\n\r\n";
+            return "OK";
         }
 
         #search files
@@ -61,18 +82,11 @@ sub handleRequest {
                 print $handle $_;
             }
             close $file;
-
-            print color("green");
-            print "200 Request served without error\n";
-            print color("reset");
-            return 1;
+            return "OK";
         } 
 
-        print color("red");
-        print "404 unable to find requested file\n";
-        print color("reset");
-
-        print $handle "HTTP/1.1 404 UNABLE TO FIND RESOURCE\r\n\r\n";
+        return "unable to find requested file";
     }
+    return "unable to find requested file";
 }
 1;
