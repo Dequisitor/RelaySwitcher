@@ -12,22 +12,11 @@ sub handleRequest {
     my $handle = $_[1];
     my $reqType = $_[2];
     my $regPath = "RelaySwitcher/public" . $_[3];
+	my $reqBody = $_[4];
     print "request path: $regPath\n";
 
     if ($reqType eq "POST") {
-        my $contentLength = 0;
-        while (<$handle>) {
-            last if $_ eq "\r\n";
-
-            my $line = substr($_, 0, 15);
-            if ($line eq "Content-Length:") {
-                ($contentLength = substr($_, 15)) =~ s/\s//;
-            }
-        }
-
-        my $content;
-        read($handle, $content, $contentLength);
-        print "recieved content: $content\n";
+        print "recieved content: $reqBody\n";
         print $handle "HTTP/1.1 200 OK\r\n\r\n";
         return "OK";
     }
