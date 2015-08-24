@@ -11,9 +11,9 @@ sub init {
 sub handleRequest {
     my $handle = $_[1];
     my $reqType = $_[2];
-    my $regPath = "RelaySwitcher/public" . $_[3];
+    my $reqPath = "RelaySwitcher/public" . $_[3];
 	my $reqBody = $_[4];
-    print "request path: $regPath\n";
+    print "request path: $reqPath\n";
 
     if ($reqType eq "POST") {
         print "recieved content: $reqBody\n";
@@ -63,10 +63,10 @@ sub handleRequest {
         }
 
         #search files
-        if (-e $regPath) {
+        if (-e $reqPath) {
             print $handle "HTTP/1.1 200 OK\r\n\r\n";
             my $file;
-            open($file, "<" . $regPath);
+            open($file, "<" . $reqPath);
             while (<$file>) {
                 print $handle $_;
             }
