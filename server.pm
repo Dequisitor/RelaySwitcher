@@ -29,6 +29,7 @@ sub handleRequest {
         if ($reqPieces[1] eq "status") {
             my $command = "sudo python ./RelaySwitcher/executables/status.py " . (22 + $reqPieces[2]);
             my $result = `$command`;
+            print $handle "HTTP/1.1 200 OK\r\n\r\n";
             if ($? == 0) {
                 print "command: $command: $result";
                 print $handle $result;
@@ -43,6 +44,7 @@ sub handleRequest {
             if ($reqPieces[2] eq "on" or $reqPieces[2] eq "off") {
                 my $command = "sudo python ./RelaySwitcher/executables/$reqPieces[2].py " . (15 + $reqPieces[3]);
                 my $result = `$command`;
+				print $handle "HTTP/1.1 200 OK\r\n\r\n";
                 if ($? == 0) {
                     print $handle "OK";
                     return "OK";
@@ -68,7 +70,7 @@ sub handleRequest {
             my $file;
             open($file, "<" . $reqPath);
             while (<$file>) {
-                print $handle $_;
+				print $handle $_;
             }
             close $file;
             return "OK";
