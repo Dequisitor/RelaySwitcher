@@ -9,4 +9,5 @@ if int(relay.read().strip()) == 0:
 else:
 	result = "0"
 
+relay.close()
 print result
