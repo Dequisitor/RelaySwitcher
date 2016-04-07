@@ -18,7 +18,7 @@ router.get '*', (req, res, next) ->
 
 router.get '/status/:id', (req, res) ->
 	#for some reason /sys/class/gpio/export uses bcd addressing (gpio 15/16 => 22/23)
-	shell.exec 'sudo python ./RelaySwitcher/executables/status.py ' + (22+parseInt(req.params.id)), (err, stdout, stderr) ->
+	shell.exec './RelaySwitcher/executables/status ' + (22+parseInt(req.params.id)), (err, stdout, stderr) ->
 		if err
 			res.send err
 			return
@@ -27,8 +27,7 @@ router.get '/status/:id', (req, res) ->
 			return
 
 router.get '/switch/:mode/:id', (req, res) ->
-	#these are board addresses 15/16
-	shell.exec 'sudo python ./RelaySwitcher/executables/' + req.params.mode + '.py ' + (15+parseInt(req.params.id)), (err, stdout, stderr) ->
+	shell.exec './RelaySwitcher/executables/' + req.params.mode + '.py ' + (22+parseInt(req.params.id)), (err, stdout, stderr) ->
 		if err
 			res.send err
 			return
